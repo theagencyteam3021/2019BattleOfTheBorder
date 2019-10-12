@@ -208,18 +208,17 @@ public class Robot extends TimedRobot {
 
      //Collector Set Up 
      if (DriverInputSecondary.getBumper(Hand.kLeft) || DriverInputSecondary.getBumper(Hand.kRight)){
-       Intake.set(0.95);
-       Shooter.set(0.15);
+       Intake.set(-0.95);
+       Shooter.set(-0.15);
      }
      else  {
        Intake.set(0);
       Shooter.set(0);
      }
        if (DriverInputSecondary.getTriggerAxis(Hand.kLeft) > 0.25 || DriverInputSecondary.getTriggerAxis(Hand.kRight) > 0.25){
-         Shooter.set(1.0);
+         Shooter.set(-1.0);
        }
-       else{
-        Intake.set(0);
+       else if (!(DriverInputSecondary.getBumper(Hand.kLeft) || DriverInputSecondary.getBumper(Hand.kRight))){
         Shooter.set(0);       
       } 
            /*
