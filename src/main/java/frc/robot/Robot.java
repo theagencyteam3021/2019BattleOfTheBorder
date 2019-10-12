@@ -211,15 +211,18 @@ public class Robot extends TimedRobot {
        Intake.set(0.95);
        Shooter.set(0.15);
      }
-     else {
-       if (DriverInputSecondary.getTriggerAxis(Hand.kLeft) > 0.25){
+     else  {
+       Intake.set(0);
+      Shooter.set(0);
+     }
+       if (DriverInputSecondary.getTriggerAxis(Hand.kLeft) > 0.25 || DriverInputSecondary.getTriggerAxis(Hand.kRight) > 0.25){
          Shooter.set(1.0);
        }
-       else if (DriverInputSecondary.getTriggerAxis(Hand.kRight) > 0.25) {
-        Shooter.set(1.0);
-       }
-     }
-     /*
+       else{
+        Intake.set(0);
+        Shooter.set(0);       
+      } 
+           /*
     //Turret Control
     //~~~~Aiming (Raising and Lowering System)
     if (DriverInputPrimary.getYButton()){ //Raise
