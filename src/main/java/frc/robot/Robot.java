@@ -7,7 +7,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
@@ -24,8 +26,6 @@ import com.ctre.phoenix.motorcontrol.can.*;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 
-import java.lang.*;
-import java.sql.Driver;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -52,6 +52,9 @@ public class Robot extends TimedRobot {
 
   WPI_TalonSRX  Intake = new WPI_TalonSRX(3);
   WPI_TalonSRX  Shooter = new WPI_TalonSRX(0);
+
+  Solenoid Height = new Solenoid(27, 0);
+  Solenoid IntakeArms = new Solenoid(27, 1);
 /*
   //Turret Motors
   WPI_TalonSRX Motor5 = new WPI_TalonSRX(5); //Aiming (raise/lowering linear actuator)
@@ -85,6 +88,9 @@ public class Robot extends TimedRobot {
 
     DriveRight2.follow(DriveRight1);
     DriveRight3.follow(DriveRight1);
+
+    Height.set(false);
+    IntakeArms.set(false);
 
 
     SmartDashboard.putData("Auto mode", m_chooser);
@@ -164,6 +170,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 */
+    //Compressor compressor = new Compressor(0);
 
     DriveLeft1.set(ControlMode.PercentOutput, 0);
     //Reverse motor direction later
@@ -217,7 +224,7 @@ public class Robot extends TimedRobot {
         Intake.set(0);
        }
 
-      else if (DriverInputSecondary.getBumper(Hand.kLeft) || DriverInputSecondary.getBumper(Hand.kRight)){
+      else if ((DriverInputSecondary.getBumper(Hand.kLeft) || DriverInputSecondary.getBumper(Hand.kRight)) && IntakeArms.get()){
         Intake.set(-0.95);
         Shooter.set(-0.15);
       } 
@@ -225,6 +232,20 @@ public class Robot extends TimedRobot {
         Intake.set(0);
         Shooter.set(0);
      }
+
+     //Pneumatics
+
+     if (DriverInputSecondary.getXButtonReleased()) {
+      Height.set(!Height.get());
+      //System.out.println("Height after X is pressed: "+Height.get());
+
+     }
+     if (DriverInputSecondary.getYButtonReleased()) {
+       IntakeArms.set(!IntakeArms.get());
+       //System.out.println("IntakeArms after Y is pressed: "+Height.get());
+
+     }
+     
            /*
     //Turret Control
     //~~~~Aiming (Raising and Lowering System)
