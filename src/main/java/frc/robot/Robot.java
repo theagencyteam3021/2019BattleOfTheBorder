@@ -42,17 +42,23 @@ public class Robot extends TimedRobot {
   //Motor 4 Back Left Motor
   //Reverse direction of set
 //Drive Motors
-  WPI_TalonSRX Motor1 = new WPI_TalonSRX(1); //Back Right
-  WPI_TalonSRX Motor2 = new WPI_TalonSRX(2); //Front Right
-  WPI_TalonSRX Motor3 = new WPI_TalonSRX(3); //Front Left
-  WPI_TalonSRX Motor4 = new WPI_TalonSRX(4); //Back Left
+  WPI_TalonSRX DriveLeft1 = new WPI_TalonSRX(2); // Left
+  WPI_TalonSRX DriveLeft2 = new WPI_TalonSRX(12); // Left
+  WPI_TalonSRX DriveLeft3 = new WPI_TalonSRX(14); // Left
+
+  WPI_TalonSRX DriveRight1 = new WPI_TalonSRX(1); // Right
+  WPI_TalonSRX DriveRight2 = new WPI_TalonSRX(13); // Right
+  WPI_TalonSRX DriveRight3 = new WPI_TalonSRX(15); // Right
+
+/*
   //Turret Motors
   WPI_TalonSRX Motor5 = new WPI_TalonSRX(5); //Aiming (raise/lowering linear actuator)
   WPI_TalonSRX Motor6 = new WPI_TalonSRX(6); //Shooter wheel
   WPI_TalonSRX Motor7 = new WPI_TalonSRX(7); //Feeder
   int pos = 0; //for the Feeder encoder position
+  */
 
-  DifferentialDrive diffDrive = new DifferentialDrive(Motor1, Motor3);
+  DifferentialDrive diffDrive = new DifferentialDrive(DriveLeft1, DriveRight1);
   
   XboxController DriverInputPrimary = new XboxController(0);
 
@@ -71,8 +77,12 @@ public class Robot extends TimedRobot {
     m_oi = new OI();
     m_chooser.setDefaultOption("Default Auto", new DriveCommand());
 
-    Motor2.follow(Motor1);
-    Motor4.follow(Motor3);
+    DriveLeft2.follow(DriveLeft1);
+    DriveLeft3.follow(DriveLeft1);
+
+    DriveRight2.follow(DriveRight1);
+    DriveRight3.follow(DriveRight1);
+
 
     SmartDashboard.putData("Auto mode", m_chooser);
 
@@ -152,15 +162,15 @@ public class Robot extends TimedRobot {
     }
 */
 
-    Motor1.set(ControlMode.PercentOutput, 0);
+    DriveLeft1.set(ControlMode.PercentOutput, 0);
     //Reverse motor direction later
-    Motor3.set(ControlMode.PercentOutput, 0);
-
+    DriveRight1.set(ControlMode.PercentOutput, 0);
+/*
     Motor5.set(ControlMode.PercentOutput, 0);
     Motor6.set(ControlMode.PercentOutput, 0);
     Motor7.set(ControlMode.PercentOutput, 0);
 
-
+*/
 
   }
 
@@ -188,8 +198,8 @@ public class Robot extends TimedRobot {
       XboxPosXSquared = 0;
      }
      
-     diffDrive.arcadeDrive(-XboxPosYSquared, -(XboxPosXSquared * Math.max(Math.abs(XboxPosYSquared), 0.6))); //0.5  //divided by 2
-
+     diffDrive.arcadeDrive(-XboxPosYSquared, (XboxPosXSquared * Math.max(Math.abs(XboxPosYSquared), 0.6))); //0.5  //divided by 2
+/*
     //Turret Control
     //~~~~Aiming (Raising and Lowering System)
     if (DriverInputPrimary.getYButton()){ //Raise
@@ -215,6 +225,7 @@ public class Robot extends TimedRobot {
     else{
       Motor7.set(0);
     }
+    */
    }
 
   /**
