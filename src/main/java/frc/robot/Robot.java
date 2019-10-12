@@ -207,20 +207,24 @@ public class Robot extends TimedRobot {
      diffDrive.arcadeDrive(-XboxPosYSquared, (XboxPosXSquared * Math.max(Math.abs(XboxPosYSquared), 0.6))); //0.5  //divided by 2
 
      //Collector Set Up 
-     if (DriverInputSecondary.getBumper(Hand.kLeft) || DriverInputSecondary.getBumper(Hand.kRight)){
-       Intake.set(-0.95);
-       Shooter.set(-0.15);
-     }
-     else  {
-       Intake.set(0);
-      Shooter.set(0);
-     }
-       if (DriverInputSecondary.getTriggerAxis(Hand.kLeft) > 0.25 || DriverInputSecondary.getTriggerAxis(Hand.kRight) > 0.25){
-         Shooter.set(-1.0);
+           
+      if (DriverInputSecondary.getStartButton() && DriverInputSecondary.getBackButton()){
+        Intake.set(0.3);
+        Shooter.set(0.3);
+      }
+      else if (DriverInputSecondary.getTriggerAxis(Hand.kLeft) > 0.25 || DriverInputSecondary.getTriggerAxis(Hand.kRight) > 0.25){
+        Shooter.set(-1.0);
+        Intake.set(0);
        }
-       else if (!(DriverInputSecondary.getBumper(Hand.kLeft) || DriverInputSecondary.getBumper(Hand.kRight))){
-        Shooter.set(0);       
+
+      else if (DriverInputSecondary.getBumper(Hand.kLeft) || DriverInputSecondary.getBumper(Hand.kRight)){
+        Intake.set(-0.95);
+        Shooter.set(-0.15);
       } 
+      else  {
+        Intake.set(0);
+        Shooter.set(0);
+     }
            /*
     //Turret Control
     //~~~~Aiming (Raising and Lowering System)
