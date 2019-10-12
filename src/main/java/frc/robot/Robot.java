@@ -50,6 +50,8 @@ public class Robot extends TimedRobot {
   WPI_TalonSRX DriveRight2 = new WPI_TalonSRX(13); // Right
   WPI_TalonSRX DriveRight3 = new WPI_TalonSRX(15); // Right
 
+  WPI_TalonSRX  Intake = new WPI_TalonSRX(3);
+  WPI_TalonSRX  Shooter = new WPI_TalonSRX(0);
 /*
   //Turret Motors
   WPI_TalonSRX Motor5 = new WPI_TalonSRX(5); //Aiming (raise/lowering linear actuator)
@@ -61,6 +63,7 @@ public class Robot extends TimedRobot {
   DifferentialDrive diffDrive = new DifferentialDrive(DriveLeft1, DriveRight1);
   
   XboxController DriverInputPrimary = new XboxController(0);
+  XboxController DriverInputSecondary = new XboxController(1);
 
   public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
   public static OI m_oi;
@@ -165,6 +168,9 @@ public class Robot extends TimedRobot {
     DriveLeft1.set(ControlMode.PercentOutput, 0);
     //Reverse motor direction later
     DriveRight1.set(ControlMode.PercentOutput, 0);
+
+    Intake.set(ControlMode.PercentOutput, 0);
+    Shooter.set(ControlMode.PercentOutput, 0);
 /*
     Motor5.set(ControlMode.PercentOutput, 0);
     Motor6.set(ControlMode.PercentOutput, 0);
@@ -199,7 +205,10 @@ public class Robot extends TimedRobot {
      }
      
      diffDrive.arcadeDrive(-XboxPosYSquared, (XboxPosXSquared * Math.max(Math.abs(XboxPosYSquared), 0.6))); //0.5  //divided by 2
-/*
+
+
+
+     /*
     //Turret Control
     //~~~~Aiming (Raising and Lowering System)
     if (DriverInputPrimary.getYButton()){ //Raise
