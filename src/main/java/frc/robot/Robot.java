@@ -224,7 +224,10 @@ public class Robot extends TimedRobot {
         Intake.set(0);
        }
 
-      else if ((DriverInputSecondary.getBumper(Hand.kLeft) || DriverInputSecondary.getBumper(Hand.kRight)) && IntakeArms.get()){
+      else if ((DriverInputSecondary.getBumper(Hand.kLeft) 
+                || DriverInputSecondary.getBumper(Hand.kRight)) 
+                && IntakeArms.get() 
+                && (!Height.get())){
         Intake.set(-0.95);
         Shooter.set(-0.15);
       } 
