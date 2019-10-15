@@ -55,6 +55,11 @@ public class Robot extends TimedRobot {
 
   Solenoid Height = new Solenoid(27, 0);
   Solenoid IntakeArms = new Solenoid(27, 1);
+
+//  Solenoid Hatch = new Solenoid(27,2);
+
+
+
 /*
   //Turret Motors
   WPI_TalonSRX Motor5 = new WPI_TalonSRX(5); //Aiming (raise/lowering linear actuator)
@@ -91,6 +96,8 @@ public class Robot extends TimedRobot {
 
     Height.set(false);
     IntakeArms.set(false);
+
+   // Hatch.set(false);
 
 
     SmartDashboard.putData("Auto mode", m_chooser);
@@ -178,12 +185,7 @@ public class Robot extends TimedRobot {
 
     Intake.set(ControlMode.PercentOutput, 0);
     Shooter.set(ControlMode.PercentOutput, 0);
-/*
-    Motor5.set(ControlMode.PercentOutput, 0);
-    Motor6.set(ControlMode.PercentOutput, 0);
-    Motor7.set(ControlMode.PercentOutput, 0);
 
-*/
 
   }
 
@@ -245,34 +247,12 @@ public class Robot extends TimedRobot {
        //System.out.println("IntakeArms after Y is pressed: "+Height.get());
 
      }
+
+    /* if (DriverInputSecondary.getAButton()){
+       Hatch.set(!Hatch.get());
+     }*/
      
-           /*
-    //Turret Control
-    //~~~~Aiming (Raising and Lowering System)
-    if (DriverInputPrimary.getYButton()){ //Raise
-      Motor5.set(0.5);//0.2
-    }
-    else if (DriverInputPrimary.getXButton()){ //Lower
-      Motor5.set(-0.5);//0.2
-    }
-    else{ //Don't Move
-      Motor5.set(0);
-    }
-    //~~~~Shooter
-    if (DriverInputPrimary.getBumper(Hand.kLeft)){
-      Motor6.set(-1.00);//0.75
-    }
-    else{
-      Motor6.set(0);
-    }
-    //~~~~Feeder
-    if (DriverInputPrimary.getBumper(Hand.kRight)){
-      Motor7.set(-1);
-    }
-    else{
-      Motor7.set(0);
-    }
-    */
+    
    }
 
   /**
