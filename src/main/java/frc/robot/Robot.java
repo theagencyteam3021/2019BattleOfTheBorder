@@ -26,6 +26,7 @@ import com.ctre.phoenix.motorcontrol.can.*;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 
+import edu.wpi.first.CameraServer;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -53,15 +54,8 @@ public class Robot extends TimedRobot {
   WPI_TalonSRX  Intake = new WPI_TalonSRX(3);
   WPI_TalonSRX  Shooter = new WPI_TalonSRX(0);
 
-  Solenoid Height = new Solenoid(27, 0);
+ // Solenoid Height = new Solenoid(27, 0);
   Solenoid IntakeArms = new Solenoid(27, 1);
-/*
-  //Turret Motors
-  WPI_TalonSRX Motor5 = new WPI_TalonSRX(5); //Aiming (raise/lowering linear actuator)
-  WPI_TalonSRX Motor6 = new WPI_TalonSRX(6); //Shooter wheel
-  WPI_TalonSRX Motor7 = new WPI_TalonSRX(7); //Feeder
-  int pos = 0; //for the Feeder encoder position
-  */
 
   DifferentialDrive diffDrive = new DifferentialDrive(DriveLeft1, DriveRight1);
   
@@ -78,8 +72,12 @@ public class Robot extends TimedRobot {
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
    */
+
   @Override
   public void robotInit() {
+
+  // CameraServer server = new CameraServer();
+
     m_oi = new OI();
     m_chooser.setDefaultOption("Default Auto", new DriveCommand());
 
@@ -89,7 +87,8 @@ public class Robot extends TimedRobot {
     DriveRight2.follow(DriveRight1);
     DriveRight3.follow(DriveRight1);
 
-    Height.set(false);
+
+   // Height.set(false);
     IntakeArms.set(false);
 
 
@@ -149,6 +148,63 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.start();
     }
+
+
+    double XboxPosY = DriverInputPrimary.getTriggerAxis(Hand.kLeft) - DriverInputPrimary.getTriggerAxis(Hand.kRight);
+    double XboxPosYSquared = XboxPosY * Math.abs(XboxPosY) * Math.abs(XboxPosY);
+    double XboxPosX = DriverInputPrimary.getX(Hand.kLeft); //was previsouly kRight
+    double XboxPosXSquared = XboxPosX * Math.abs(XboxPosX) * Math.abs(XboxPosX);
+    //System.out.println(XboxPosYSquared);
+    // 0.0075 not 0.0007 for squared
+
+     if (!(XboxPosYSquared > 0.0007 || XboxPosYSquared < -0.0007)) {
+      XboxPosYSquared = 0;
+     }
+     if (!(XboxPosXSquared > 0.0007 || XboxPosXSquared < -0.0007)) {
+      XboxPosXSquared = 0;
+     }
+     
+     diffDrive.arcadeDrive(XboxPosYSquared, -(XboxPosXSquared * Math.max(Math.abs(XboxPosYSquared), 0.6))); //0.5  //divided by 2
+
+     //     diffDrive.arcadeDrive(-XboxPosYSquared, (XboxPosXSquared * Math.max(Math.abs(XboxPosYSquared), 0.6))); //0.5  //divided by 2
+
+
+
+     //Collector Set Up 
+           
+      if (DriverInputSecondary.getStartButton() && DriverInputSecondary.getBackButton()){
+        Intake.set(0.3);
+        Shooter.set(0.3);
+      }
+      else if (DriverInputSecondary.getTriggerAxis(Hand.kLeft) > 0.25 || DriverInputSecondary.getTriggerAxis(Hand.kRight) > 0.25){
+        Shooter.set(-1.0);
+        Intake.set(0);
+       }
+
+      else if ((DriverInputSecondary.getBumper(Hand.kLeft) 
+                || DriverInputSecondary.getBumper(Hand.kRight)) 
+                && IntakeArms.get() 
+                ){ // && (!Height.get())
+        Intake.set(-0.95);
+        Shooter.set(-0.45); //-0.15
+      } 
+      else  {
+        Intake.set(0);
+        Shooter.set(0);
+     }
+
+     //Pneumatics
+
+     /*if (DriverInputSecondary.getXButtonReleased()) {
+      Height.set(!Height.get());
+      //System.out.println("Height after X is pressed: "+Height.get());
+
+     }*/
+     if (DriverInputSecondary.getYButtonReleased()) {
+       IntakeArms.set(!IntakeArms.get());
+       //System.out.println("IntakeArms after Y is pressed: "+Height.get());
+
+     }
   }
 
   /**
@@ -211,7 +267,11 @@ public class Robot extends TimedRobot {
       XboxPosXSquared = 0;
      }
      
-     diffDrive.arcadeDrive(-XboxPosYSquared, (XboxPosXSquared * Math.max(Math.abs(XboxPosYSquared), 0.6))); //0.5  //divided by 2
+     diffDrive.arcadeDrive(XboxPosYSquared, -(XboxPosXSquared * Math.max(Math.abs(XboxPosYSquared), 0.6))); //0.5  //divided by 2
+
+     //     diffDrive.arcadeDrive(-XboxPosYSquared, (XboxPosXSquared * Math.max(Math.abs(XboxPosYSquared), 0.6))); //0.5  //divided by 2
+
+
 
      //Collector Set Up 
            
@@ -227,9 +287,9 @@ public class Robot extends TimedRobot {
       else if ((DriverInputSecondary.getBumper(Hand.kLeft) 
                 || DriverInputSecondary.getBumper(Hand.kRight)) 
                 && IntakeArms.get() 
-                && (!Height.get())){
+                ){ // && (!Height.get())
         Intake.set(-0.95);
-        Shooter.set(-0.15);
+        Shooter.set(-0.45); //-0.15
       } 
       else  {
         Intake.set(0);
@@ -238,44 +298,17 @@ public class Robot extends TimedRobot {
 
      //Pneumatics
 
-     if (DriverInputSecondary.getXButtonReleased()) {
+     /*if (DriverInputSecondary.getXButtonReleased()) {
       Height.set(!Height.get());
       //System.out.println("Height after X is pressed: "+Height.get());
 
-     }
+     }*/
      if (DriverInputSecondary.getYButtonReleased()) {
        IntakeArms.set(!IntakeArms.get());
        //System.out.println("IntakeArms after Y is pressed: "+Height.get());
 
      }
-     
-           /*
-    //Turret Control
-    //~~~~Aiming (Raising and Lowering System)
-    if (DriverInputPrimary.getYButton()){ //Raise
-      Motor5.set(0.5);//0.2
-    }
-    else if (DriverInputPrimary.getXButton()){ //Lower
-      Motor5.set(-0.5);//0.2
-    }
-    else{ //Don't Move
-      Motor5.set(0);
-    }
-    //~~~~Shooter
-    if (DriverInputPrimary.getBumper(Hand.kLeft)){
-      Motor6.set(-1.00);//0.75
-    }
-    else{
-      Motor6.set(0);
-    }
-    //~~~~Feeder
-    if (DriverInputPrimary.getBumper(Hand.kRight)){
-      Motor7.set(-1);
-    }
-    else{
-      Motor7.set(0);
-    }
-    */
+   
    }
 
   /**
